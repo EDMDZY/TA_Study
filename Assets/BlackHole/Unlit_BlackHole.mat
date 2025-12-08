@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Unlit_BlackHole
+  m_Shader: {fileID: 4800000, guid: 2a5e44cd441760f46b69750cc44d13f0, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 5d93a924901f79a499f480ba17ea5f14, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SkyCube:
+        m_Texture: {fileID: 8900000, guid: 4e1dabeab03d96b4aafe18ebe0b7cdc8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BlurAmount: 0
+    - _DiskBrightness: 10
+    - _DiskRadian: 0.29
+    - _DiskSteps: 5
+    - _DiskThickness: 0.014
+    - _DiskUVScale: 1
+    - _DistortionH: 0.016
+    - _DistortionP: 3
+    - _HoleRadian: 0.02
+    - _RotationSpeed: -0.1
+    - _Size: 0.05
+    - _Speed: 3.35
+    - _Steps: 8.5
+    - _WrapMode: 0
+    m_Colors: []
+  m_BuildTextureStacks: []

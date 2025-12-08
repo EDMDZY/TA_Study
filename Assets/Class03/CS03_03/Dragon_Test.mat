@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Dragon_Test
+  m_Shader: {fileID: 4800000, guid: b132dc05b26dd8b4987c949163ce1c93, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _CubeMap:
+        m_Texture: {fileID: 8900000, guid: fa5fbbffa644d654a8699364b6f95778, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ThicknessMap:
+        m_Texture: {fileID: 2800000, guid: 87d219a4f48dd6e43ab27350b87d748a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Distort: 0
+    - _EnvIntensity: 0.27
+    - _EnvRotate: 133
+    - _FresnelStr: 0.17
+    - _Pow: 16
+    - _Scale: 1.31
+    m_Colors:
+    - _BackLightCol: {r: 0.7764706, g: 1, b: 0.93211937, a: 1}
+    - _BaseCol: {r: 0.15767173, g: 0.3777062, b: 0.3886792, a: 1}
+    - _FresnelCol: {r: 0.7528302, g: 0.9882592, b: 1, a: 1}
+  m_BuildTextureStacks: []

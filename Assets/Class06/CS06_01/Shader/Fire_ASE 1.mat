@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Fire_ASE 1
+  m_Shader: {fileID: 4800000, guid: 66702af6d25b4534e842d6ca862558c1, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Fire:
+        m_Texture: {fileID: 2800000, guid: 600b4e019d8141848ba3c86b49e2bed6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FireCol:
+        m_Texture: {fileID: 2800000, guid: 600b4e019d8141848ba3c86b49e2bed6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FireMask:
+        m_Texture: {fileID: 2800000, guid: 7973300a1a076c4418f6106ad19253b9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 2800000, guid: 832e9088dd4f5744c912ee020175c49e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample0:
+        m_Texture: {fileID: 2800000, guid: 600b4e019d8141848ba3c86b49e2bed6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Cutoff: 0.5
+    - _EndEmiss: 0.67
+    - _ExcessiveEdges: 0.303
+    - _Float0: 0.036
+    - _Float1: 0.0309
+    - _GradientEndControl: 7.06
+    - _LightingIntensity: 4.9
+    - _LitingEmission: 1.4
+    - _NoiseIntensity: 0.019
+    - _NoiseIntensity1: 0.0208
+    - __dirty: 0
+    m_Colors:
+    - _Color0: {r: 0.7207546, g: 0.4713729, b: 0, a: 1}
+    - _FireCol: {r: 0.04514285, g: 0, b: 0.75686276, a: 1}
+  m_BuildTextureStacks: []
