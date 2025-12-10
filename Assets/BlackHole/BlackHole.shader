@@ -10,7 +10,7 @@ Shader "Unlit/BlackHole"
         _DistortionP("扭曲衰减系数", Float) = 3
         _RotationSpeed("旋转速度", Float) = 3
         _DiskSteps("吸积盘步数", Int) = 12
-        _DiskBrightness("吸积盘亮度", Range(0.1, 10)) = 1.0  // 新增亮度控制
+        _DiskBrightness("吸积盘亮度", Range(0.1, 20)) = 1.0  // 新增亮度控制
         _DiskThickness("吸积盘厚度", Range(0.01, 1)) = 0.1    // 新增厚度控制
         _DiskUVScale("吸积盘UV缩放", Float) = 1.0            // 新增UV缩放控制
     }
@@ -72,7 +72,7 @@ Shader "Unlit/BlackHole"
             // 判断是否在吸积盘范围内
             bool InDisk(float3 p) { return length(p.xz) < _DiskRadian; }
 
-            // 改进的吸积盘渲染函数（使用_MainTex采样）
+            // 吸积盘渲染函数（使用_MainTex采样）
             float4 RaymarchDisk(float3 ray, float3 zeroPos)
             {
                 if (InHole(zeroPos))

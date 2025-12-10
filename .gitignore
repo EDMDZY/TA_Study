@@ -97,3 +97,11 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+ProjectSettings/ProjectSettings.asset
+.idea/.idea.TA_Study/.idea/indexLayout.xml
+.idea/.idea.TA_Study/.idea/vcs.xml
+Assets/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateMenuItems.cs
+Packages/packages-lock.json
+ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json
+ProjectSettings/ProjectSettings.asset
+ProjectSettings/ProjectVersion.txt
