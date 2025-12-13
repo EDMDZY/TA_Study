@@ -18,6 +18,7 @@ Shader "Unlit/Scene_Mirrior_Code"
                 Comp Equal
             }
             CGPROGRAM
+            #pragma multi_compile_instancing
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
@@ -27,12 +28,14 @@ Shader "Unlit/Scene_Mirrior_Code"
 
             struct appdata
             {
+                UNITY_VERTEX_INPUT_INSTANCE_ID
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
+                UNITY_VERTEX_INPUT_INSTANCE_ID
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
             };
@@ -43,6 +46,8 @@ Shader "Unlit/Scene_Mirrior_Code"
             v2f vert (appdata v)
             {
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_TRANSFER_INSTANCE_ID(v, o);
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _Diffuse);
                 return o;
@@ -50,6 +55,8 @@ Shader "Unlit/Scene_Mirrior_Code"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                
+                UNITY_SETUP_INSTANCE_ID(i);
                 // sample the texture
                 fixed4 col = tex2D(_Diffuse, i.uv);
                 return col;

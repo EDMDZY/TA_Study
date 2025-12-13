@@ -49,11 +49,11 @@ Shader "Unlit/04_Blending"
             v2f vert (appdata v)
             {
                 v2f o;
-				float4 pos_world = mul(unity_ObjectToWorld, v.vertex);
-				float4 pos_view = mul(UNITY_MATRIX_V, pos_world);
-				float4 pos_clip = mul(UNITY_MATRIX_P, pos_view);
-				o.pos = pos_clip;
-				//o.pos = UnityObjectToClipPos(v.vertex);
+				//float4 pos_world = mul(unity_ObjectToWorld, v.vertex);
+				//float4 pos_view = mul(UNITY_MATRIX_V, pos_world);
+				//float4 pos_clip = mul(UNITY_MATRIX_P, pos_view);
+				o.pos = UnityObjectToClipPos(v.vertex);
+
 				o.uv.xy = v.texcoord0 * _MainTex_ST.xy + _MainTex_ST.zw;
 				o.uv.zw = v.texcoord0 * _NoiseMap_ST.xy + _NoiseMap_ST.zw;
 				//o.uv = TRANSFORM_TEX(v.uv, _MainTex);

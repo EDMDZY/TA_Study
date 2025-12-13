@@ -1,62 +1,68 @@
-Shader "Unlit/SkyBox_Mirrior_Code"
+Shader "Custom/SkyBox_Mirrior_Code"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _Color ("Color", Color) = (0,0,0,1)
-        [IntRange]_Index ("物体模板编号", Range(0,255)) = 1
+        _MainTex ("Cubemap", Cube) = "white" {}
+        _RotationSpeed ("Rotation Speed", Float) = 1.0
+        _Expose ("_Expose", Float) = 1.0
+        [IntRange]_Index ("视窗模板编号", Range(0,255)) = 1
     }
+    
     SubShader
     {
         Tags { "Queue"="AlphaTest+15" }
-        LOD 100
-
+        ZTest Always
+       
         Pass
         {
-            ZTest Always
+
             Stencil
             {
                 Ref [_Index]
                 Comp Equal
             }
+            
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
-
             #include "UnityCG.cginc"
-
+            
+            samplerCUBE _MainTex;
+            float _RotationSpeed;
+            float _Expose;
+            
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
             };
-
+            
             struct v2f
             {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
+                float4 pos : SV_POSITION;
+                float3 uv : TEXCOORD0;
             };
-
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-            float4 _Color;
-
-            v2f vert (appdata v)
+            
+            v2f vert(appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.pos = UnityObjectToClipPos(v.vertex);
+                
+                // 计算旋转
+                float angle = _Time.y * _RotationSpeed;
+                float sinAngle, cosAngle;
+                sincos(angle, sinAngle, cosAngle);
+                float2x2 rotationMatrix = float2x2(cosAngle, -sinAngle, sinAngle, cosAngle);
+                
+                // 应用旋转
+                o.uv = v.vertex.xyz;
+                o.uv.xz = mul(rotationMatrix, o.uv.xz);
+                
                 return o;
             }
-
-            fixed4 frag (v2f i) : SV_Target
+            
+            fixed4 frag(v2f i) : SV_Target
             {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-
-                return _Color;
+                return texCUBE(_MainTex, i.uv) * _Expose;
             }
             ENDCG
         }

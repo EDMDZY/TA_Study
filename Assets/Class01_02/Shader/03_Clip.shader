@@ -48,11 +48,7 @@ Shader "Unlit/03_Clip"
             v2f vert (appdata v)
             {
                 v2f o;
-                float4 worldPos = mul(UNITY_MATRIX_M, v.vertex);
-                float4 viewPos = mul(UNITY_MATRIX_V, worldPos);
-                float4 clipPos = mul(UNITY_MATRIX_P, viewPos);
-                o.pos = clipPos;
-
+                o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv0 = TRANSFORM_TEX(v.uv, _MainTex);
                 
                 return o;

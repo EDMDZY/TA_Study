@@ -3,7 +3,7 @@ Shader "Unlit/Vice_Code"
     Properties
     {
         _MainTex ("主帖图", 2D) = "white" {}
-        _Grow ("生长进度", Range(-1,1.5)) = 1
+        _Grow ("生长进度", Range(-1,0)) = 0
         _Expand ("生长末尾开口大小", Float) = 1
         _Scale ("整体缩放", Float) = 0
         _GrowMin ("生长时最小阈值", Range(0, 1)) = 0.6
