@@ -38,7 +38,7 @@ Material:
     - _PowStr: 1.55
     - _RimStr: 3.86
     m_Colors:
-    - _FlowSpeed: {r: 0, g: 1, b: 0, a: 0}
+    - _FlowSpeed: {r: 3, g: 1, b: 0, a: 0}
     - _InnerCol: {r: 0.42505977, g: 0.037814148, b: 0.42641503, a: 1}
     - _OutCol: {r: 1, g: 0.35002583, b: 0, a: 1}
   m_BuildTextureStacks: []
