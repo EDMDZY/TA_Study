@@ -12,7 +12,7 @@
 		_AOMap("AO Map",2D) = "white"{}
 		_AOAdjust("AO Adjust",Range(0,1)) = 1
 		_RoughnessMap("Roughness Map",2D) = "black"{}
-		_RoughnessContrast("Roughness Contrast",Range(0.01,10)) = 1
+		_RoughnessContrast("Roughness Contrast",Range(0.01,1)) = 1
 		_RoughnessBrightness("Roughness Brightness",Float) = 1
 		_RoughnessMin("Rough Min",Range(0,1)) = 0
 		_RoughnessMax("Rough Max",Range(0,1)) = 1
@@ -27,7 +27,6 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-
 			
 			#include "UnityCG.cginc"
 

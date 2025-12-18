@@ -1,4 +1,4 @@
-﻿Shader "Unlit/CubeMap"
+﻿Shader "Unlit/CubeMap"	//立方体贴图采样
 {
 	Properties
 	{

@@ -1,4 +1,4 @@
-﻿Shader "Unlit/LatLong"
+﻿Shader "Unlit/LatLong" // 2D全景贴图采样
 {
 	Properties
 	{

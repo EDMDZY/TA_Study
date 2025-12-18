@@ -2,19 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: SH
   m_Shader: {fileID: 4800000, guid: d024f038c5d04bc47862b0ba83b71b53, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -34,6 +39,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AOAdjust: 1
     - _Expose: 1.5
@@ -52,3 +58,4 @@ Material:
     - custom_SHBg: {r: 0.013626291, g: 0.013929229, b: -0.0059838276, a: 0.010500107}
     - custom_SHBr: {r: 0.007906358, g: 0.012327563, b: -0.009030778, a: 0.0089519285}
     - custom_SHC: {r: 0.015063562, g: 0.018150281, b: 0.016150426, a: 1}
+  m_BuildTextureStacks: []
