@@ -31,5 +31,5 @@ Material:
     m_Floats:
     - _BlurOffset: 1.2
     m_Colors:
-    - _BlurOffset: {r: 0.0037122127, g: 0.009593749, b: 0, a: 0}
+    - _BlurOffset: {r: 0.0054049296, g: 0.012953586, b: 0, a: 0}
   m_BuildTextureStacks: []
