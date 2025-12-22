@@ -24,7 +24,7 @@ public class FunnyGPUInstance : MonoBehaviour
             pGO.transform.SetParent(gameObject.transform);
             if (_bRandPos)
             {
-                pGO.transform.localPosition = Random.insideUnitSphere * 10.0f;
+                pGO.transform.localPosition = Random.insideUnitSphere * 20.0f;
             }
             else
             {
@@ -32,8 +32,8 @@ public class FunnyGPUInstance : MonoBehaviour
             }
 
             //随机每个对象的颜色
-            mpb.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1.0f));
-            mpb.SetFloat("_Phi", Random.Range(-40f, 40f));
+            mpb.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0.1f, 1.0f)));
+            mpb.SetFloat("_Phi", Random.Range(-80f, 80f));
             mpb.SetFloat("_Speed", Random.Range(-10f, 10f));
             mpb.SetFloat("_A", Random.Range(-10f, 10f));
 

@@ -6,7 +6,9 @@ Shader "Unlit/FunnyGPUInstance"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
+        Blend One OneMinusSrcAlpha
+        ZWrite Off
         LOD 100
 
         Pass
@@ -59,7 +61,8 @@ Shader "Unlit/FunnyGPUInstance"
                 UNITY_TRANSFER_INSTANCE_ID(v, o);
 
                 float phi = UNITY_ACCESS_INSTANCED_PROP(Props, _Phi);
-                v.vertex = v.vertex + sin(_Time.y + phi);
+                float speed = UNITY_ACCESS_INSTANCED_PROP(Props, _Speed);
+                v.vertex = v.vertex + sin(_Time.y * 0.1 * speed + phi);
 
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
@@ -76,6 +79,7 @@ Shader "Unlit/FunnyGPUInstance"
 
                 //得到由CPU设置的颜色
                 float4 col= UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
+                
                 return col;
                 // sample the texture
                /* fixed4 col = tex2D(_MainTex, i.uv);

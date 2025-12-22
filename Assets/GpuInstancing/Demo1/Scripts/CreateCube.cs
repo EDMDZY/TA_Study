@@ -18,7 +18,7 @@ public class CreateCube : MonoBehaviour
             pGO.transform.SetParent(gameObject.transform);
             if(_bRandPos)
             {
-                pGO.transform.localPosition = Random.insideUnitSphere * 10.0f;
+                pGO.transform.localPosition = Random.insideUnitSphere * 20.0f;
             }
             else
             {
