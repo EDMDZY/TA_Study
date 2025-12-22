@@ -37,12 +37,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Distort: 0
+    - _Distort: 0.352
     - _EnvIntensity: 0.27
     - _EnvRotate: 133
     - _FresnelStr: 0.17
-    - _Pow: 16
-    - _Scale: 1.31
+    - _Pow: 3.5
+    - _Scale: 0.79
     m_Colors:
     - _BackLightCol: {r: 0.7764706, g: 1, b: 0.93211937, a: 1}
     - _BaseCol: {r: 0.15767173, g: 0.3777062, b: 0.3886792, a: 1}

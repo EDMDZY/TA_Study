@@ -68,7 +68,7 @@ Material:
     - _FresnelMax: 1
     - _FresnelMin: 0
     - _NormalStrength: 1
-    - _Opacity: 0.25
+    - _Opacity: 0.583
     - _PointPower: 1
     - _PointScale: 1
     - _Power: 1

@@ -32,7 +32,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ThicknessMap:
-        m_Texture: {fileID: 2800000, guid: 87d219a4f48dd6e43ab27350b87d748a, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -42,7 +42,7 @@ Material:
     - _EnvRotate: 133
     - _FresnelStr: 0.17
     - _Pow: 16
-    - _Scale: 1.31
+    - _Scale: 0.79
     m_Colors:
     - _BackLightCol: {r: 0.7764706, g: 1, b: 0.93211937, a: 1}
     - _BaseCol: {r: 0.15767173, g: 0.3777062, b: 0.3886792, a: 1}
