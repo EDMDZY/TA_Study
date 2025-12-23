@@ -35,7 +35,6 @@ public class FunnyGPUInstance : MonoBehaviour
             mpb.SetColor("_Color", new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0.1f, 1.0f)));
             mpb.SetFloat("_Phi", Random.Range(-80f, 80f));
             mpb.SetFloat("_Speed", Random.Range(-10f, 10f));
-            mpb.SetFloat("_A", Random.Range(-10f, 10f));
 
             MeshRenderer meshRenderer = pGO.GetComponent<MeshRenderer>();
             if (meshRenderer != null)

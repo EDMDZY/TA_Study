@@ -1,0 +1,122 @@
+// BoidsCompute.compute
+#pragma kernel BoidsUpdate
+
+// Boid数据：位置和速度
+struct BoidData
+{
+    float3 position;
+    float3 velocity;
+};
+
+// 输入/输出的Boid数据
+RWStructuredBuffer<BoidData> boidsBuffer;
+
+// 参数（从BoidSpawner获取）
+float nearDist;
+float collisionDist;
+float velocityMatchingAmt;
+float flockCenteringAmt;
+float collisionAvoidanceAmt;
+float mouseAtrractionAmt;
+float mouseAvoidanceAmt;
+float mouseAvoiddanceDsit;
+float maxVelocity;
+float minVelocity;
+float velocityLerpAmt;
+float3 mousePos;
+
+// 新增：传递Boid总数
+int boidCount;
+
+// 查找邻居（简化版本，每个线程查找所有其他Boid）
+[numthreads(64, 1, 1)]
+void BoidsUpdate(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    
+    // 确保不超出范围
+    if (index >= boidCount)
+        return;
+    
+    BoidData current = boidsBuffer[index];
+    
+    // 邻居统计
+    int neighborCount = 0;
+    int collisionCount = 0;
+    float3 neighborVelSum = float3(0, 0, 0);
+    float3 neighborPosSum = float3(0, 0, 0);
+    float3 collisionPosSum = float3(0, 0, 0);
+    
+    // 遍历所有Boid查找邻居 - 使用boidCount而不是Length
+    for (int i = 0; i < boidCount; i++)
+    {
+        if (i == index) continue;
+        
+        BoidData other = boidsBuffer[i];
+        float dist = distance(current.position, other.position);
+        
+        if (dist < nearDist)
+        {
+            neighborCount++;
+            neighborVelSum += other.velocity;
+            neighborPosSum += other.position;
+        }
+        
+        if (dist < collisionDist)
+        {
+            collisionCount++;
+            collisionPosSum += other.position;
+        }
+    }
+    
+    // 计算新速度
+    float3 newVel = current.velocity;
+    
+    // 1. 速度匹配
+    if (neighborCount > 0)
+    {
+        float3 avgNeighborVel = neighborVelSum / neighborCount;
+        newVel += (avgNeighborVel - current.velocity) * velocityMatchingAmt;
+    }
+    
+    // 2. 凝聚向心性
+    if (neighborCount > 0)
+    {
+        float3 neighborCenter = neighborPosSum / neighborCount;
+        newVel += (neighborCenter - current.position) * flockCenteringAmt;
+    }
+    
+    // 3. 碰撞避免
+    if (collisionCount > 0)
+    {
+        float3 collisionCenter = collisionPosSum / collisionCount;
+        newVel += (collisionCenter - current.position) * collisionAvoidanceAmt;
+    }
+    
+    // 4. 鼠标跟随
+    float3 toMouse = mousePos - current.position;
+    float mouseDist = length(toMouse);
+    if (mouseDist > mouseAvoiddanceDsit)
+        newVel += toMouse * mouseAtrractionAmt;
+    else
+        newVel -= normalize(toMouse) * mouseAvoidanceAmt;
+    
+    // 5. 速度限制
+    float speed = length(newVel);
+    if (speed > maxVelocity)
+        newVel = (newVel / speed) * maxVelocity;
+    if (speed < minVelocity)
+        newVel = (newVel / speed) * minVelocity;
+    
+    // 6. 线性插值
+    newVel = lerp(current.velocity, newVel, velocityLerpAmt);
+    
+    // 7. 更新位置
+    float3 newPos = current.position + newVel * 0.016f; // 近似Time.deltaTime
+    
+    // 写回Buffer
+    BoidData updated;
+    updated.position = newPos;
+    updated.velocity = newVel;
+    boidsBuffer[index] = updated;
+}
