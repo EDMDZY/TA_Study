@@ -33,36 +33,36 @@ int boidCount;
 void BoidsUpdate(uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;
-    
-    // 确保不超出范围
-    if (index >= boidCount)
-        return;
+    if (index >= boidCount) return;
     
     BoidData current = boidsBuffer[index];
     
-    // 邻居统计
     int neighborCount = 0;
     int collisionCount = 0;
     float3 neighborVelSum = float3(0, 0, 0);
     float3 neighborPosSum = float3(0, 0, 0);
     float3 collisionPosSum = float3(0, 0, 0);
     
-    // 遍历所有Boid查找邻居 - 使用boidCount而不是Length
+    // 预计算距离的平方，避免开方运算
+    float nearDistSq = nearDist * nearDist;
+    float collisionDistSq = collisionDist * collisionDist;
+    
     for (int i = 0; i < boidCount; i++)
     {
         if (i == index) continue;
         
         BoidData other = boidsBuffer[i];
-        float dist = distance(current.position, other.position);
+        float3 offset = other.position - current.position;
+        float distSq = dot(offset, offset);  // 使用点积计算距离平方
         
-        if (dist < nearDist)
+        if (distSq < nearDistSq)
         {
             neighborCount++;
             neighborVelSum += other.velocity;
             neighborPosSum += other.position;
         }
         
-        if (dist < collisionDist)
+        if (distSq < collisionDistSq)
         {
             collisionCount++;
             collisionPosSum += other.position;
