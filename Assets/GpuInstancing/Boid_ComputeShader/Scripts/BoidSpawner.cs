@@ -106,7 +106,7 @@ public class BoidSpawner : MonoBehaviour
             }
         }
         
-        // 2. 初始化GPU数据
+        // 2. 初始化GPU数据(准备输入数据)
         boidGPUDataArray = new BoidGPUData[numBoids];
         for (int i = 0; i < numBoids; i++)
         {
@@ -118,7 +118,7 @@ public class BoidSpawner : MonoBehaviour
             boidGPUDataArray[i].velocity = randVel;
         }
         
-        // 3. 创建Compute Buffer
+        // 3. 创建Compute Buffer（传入数据）
         int stride = 24; // 数据大小：Vector3(3个float × 4字节) × 2 = 24字节
         boidsBuffer = new ComputeBuffer(numBoids, stride);
         boidsBuffer.SetData(boidGPUDataArray); // 将CPU数据复制到GPU
@@ -138,7 +138,7 @@ public class BoidSpawner : MonoBehaviour
         // 更新鼠标/目标位置
         mousePos = target.position;
     
-        // 调度Compute Shader
+        // 调度Compute Shader（将buffer绑定到ComputeShader）
         if (boidsComputeShader != null && boidsBuffer != null)
         {
             int kernel = boidsComputeShader.FindKernel("BoidsUpdate"); // 获取计算内核
@@ -161,6 +161,7 @@ public class BoidSpawner : MonoBehaviour
         
             // 调度计算：每个线程组64个线程，根据Boid数量计算需要的线程组数
             int threadGroups = Mathf.CeilToInt(numBoids / 64.0f);
+            // 启动ComputeShader
             boidsComputeShader.Dispatch(kernel, threadGroups, 1, 1); // 执行GPU计算
         
             // 从GPU获取计算后的数据

@@ -427,21 +427,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbd2e8356842215418523241564260e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numBoids: 1000
+  numBoids: 10000
   boidPrefab: {fileID: 2868498682602452064, guid: 4b528c6de32eec240a00bf182dfc5009, type: 3}
   spawnRadius: 100
   spawnVelcoty: 10
   minVelocity: 0
-  maxVelocity: 30
+  maxVelocity: 40
   nearDist: 30
-  collisionDist: 5
+  collisionDist: 1
   velocityMatchingAmt: 0.01
-  flockCenteringAmt: 0.15
-  collisionAvoidanceAmt: -0.5
+  flockCenteringAmt: 0.1
+  collisionAvoidanceAmt: -0.55
   mouseAtrractionAmt: 0.01
-  mouseAvoidanceAmt: 0.75
+  mouseAvoidanceAmt: 1
   mouseAvoiddanceDsit: 15
-  velocityLerpAmt: 0.25
+  velocityLerpAmt: 1
   mousePos: {x: 0, y: 0, z: 0}
   target: {fileID: 1960358243}
   boidsComputeShader: {fileID: 7200000, guid: a22a3f0f4c1fd4a488fd02ee8d66654a, type: 3}

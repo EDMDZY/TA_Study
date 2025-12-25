@@ -1,122 +1,297 @@
 // BoidsCompute.compute
+
+// 预处理器指令：声明计算内核名称为BoidsUpdate
+// 一个Compute Shader可以有多个内核，这是主要计算入口
 #pragma kernel BoidsUpdate
 
+// 包含Unity内置变量文件，提供_Time等时间相关变量
+#include <UnityShaderVariables.cginc>
+
+// ========== 数据结构定义 ==========
 // Boid数据：位置和速度
+// 这是GPU端的数据结构，与C#端结构体必须匹配
 struct BoidData
 {
-    float3 position;
-    float3 velocity;
+    float3 position;  // 三维位置向量 (x, y, z)
+    float3 velocity;  // 三维速度向量 (vx, vy, vz)
 };
 
-// 输入/输出的Boid数据
+// ========== 输入输出缓冲区 ==========
+// RWStructuredBuffer表示可读写的结构化数据缓冲区
+// 这是所有Boid数据的存储容器，每个元素是一个BoidData结构
 RWStructuredBuffer<BoidData> boidsBuffer;
 
-// 参数（从BoidSpawner获取）
+// ========== 从CPU传入的参数 ==========
+// 这些参数在C#脚本(BoidSpawner.cs)中每帧设置
+
+// 邻居检测距离：在此距离内的Boid被视为邻居
 float nearDist;
+
+// 碰撞检测距离：在此距离内的Boid有碰撞风险
 float collisionDist;
+
+// 速度匹配强度系数：控制Boid与邻居速度的相似程度
 float velocityMatchingAmt;
+
+// 凝聚向心强度系数：控制Boid向邻居中心靠拢的程度
 float flockCenteringAmt;
+
+// 碰撞避免强度系数：控制Boid远离太近邻居的程度（通常为负值）
 float collisionAvoidanceAmt;
+
+// 鼠标吸引力强度：距离远时向鼠标/目标移动的强度
 float mouseAtrractionAmt;
+
+// 鼠标排斥力强度：距离近时远离鼠标/目标的强度
 float mouseAvoidanceAmt;
+
+// 鼠标排斥距离阈值：小于此距离时开始排斥行为
 float mouseAvoiddanceDsit;
+
+// 最大速度限制：防止Boid移动过快
 float maxVelocity;
+
+// 最小速度限制：防止Boid完全静止
 float minVelocity;
+
+// 速度插值系数：控制新旧速度的混合比例（0-1，值越大变化越快）
 float velocityLerpAmt;
+
+// 鼠标/目标位置：Boid会跟随或避开的位置
 float3 mousePos;
 
-// 新增：传递Boid总数
+// Boid总数：GPU无法直接获取缓冲区长度，必须从CPU传递
 int boidCount;
 
-// 查找邻居（简化版本，每个线程查找所有其他Boid）
+// 随机种子：用于生成伪随机数，避免所有Boid行为完全同步
+float randomSeed;
+
+// ========== 辅助函数：随机数生成 ==========
+// 简单的伪随机函数，基于三角函数生成0-1范围内的随机数
+float Rand(float2 co)
+{
+    // 原理：使用正弦函数和大数乘法产生伪随机序列
+    // dot(co.xy, float2(12.9898, 78.233)) - 点积作为种子
+    // sin() * 43758.5453 - 放大并产生随机性
+    // frac() - 取小数部分，确保结果在0-1范围内
+    return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+// ========== 主计算内核 ==========
+// 线程组配置：每个线程组64个线程，只在X维度工作
+// 总线程数 = 线程组数 × 64，每个线程处理一个Boid
 [numthreads(64, 1, 1)]
 void BoidsUpdate(uint3 id : SV_DispatchThreadID)
 {
+    // 步骤1：获取当前线程处理的Boid索引
+    // id.x是线程在X维度的全局索引
     uint index = id.x;
-    if (index >= boidCount) return;
     
+    // 步骤2：边界检查 - 确保索引不超出Boid总数
+    // 因为线程数可能大于Boid数（为了内存对齐和性能）
+    if (index >= boidCount)
+        return;  // 超出范围的线程直接返回，不执行计算
+    
+    // 步骤3：从全局缓冲区读取当前Boid的数据
     BoidData current = boidsBuffer[index];
     
-    int neighborCount = 0;
-    int collisionCount = 0;
-    float3 neighborVelSum = float3(0, 0, 0);
-    float3 neighborPosSum = float3(0, 0, 0);
-    float3 collisionPosSum = float3(0, 0, 0);
+    // 步骤4：初始化邻居统计变量
+    int neighborCount = 0;           // 邻居数量计数器
+    int collisionCount = 0;          // 碰撞风险Boid数量计数器
+    float3 neighborVelSum = float3(0, 0, 0);  // 邻居速度累加和
+    float3 neighborPosSum = float3(0, 0, 0);  // 邻居位置累加和
+    float3 collisionPosSum = float3(0, 0, 0); // 碰撞风险位置累加和
     
-    // 预计算距离的平方，避免开方运算
-    float nearDistSq = nearDist * nearDist;
-    float collisionDistSq = collisionDist * collisionDist;
+    // 步骤5：预计算距离平方（性能优化关键）
+    // 避免在循环中使用开方运算，比较平方值更快
+    float nearDistSq = nearDist * nearDist;          // 邻居距离平方
+    float collisionDistSq = collisionDist * collisionDist;  // 碰撞距离平方
     
+    // 步骤6：邻居查找循环（算法瓶颈 - O(N²)复杂度）
+    // 每个线程需要遍历所有其他Boid来查找邻居
     for (int i = 0; i < boidCount; i++)
     {
+        // 6.1：跳过自己，不与自身比较
         if (i == index) continue;
         
+        // 6.2：读取其他Boid的数据
         BoidData other = boidsBuffer[i];
-        float3 offset = other.position - current.position;
-        float distSq = dot(offset, offset);  // 使用点积计算距离平方
         
+        // 6.3：计算相对位置偏移
+        float3 offset = other.position - current.position;
+        
+        // 6.4：计算距离平方（使用点积代替开方运算）
+        // dot(offset, offset) = offset.x² + offset.y² + offset.z²
+        float distSq = dot(offset, offset);
+        
+        // 6.5：判断是否为邻居（在nearDist范围内）
         if (distSq < nearDistSq)
         {
-            neighborCount++;
-            neighborVelSum += other.velocity;
-            neighborPosSum += other.position;
+            neighborCount++;                // 增加邻居计数
+            neighborVelSum += other.velocity;  // 累加速度
+            neighborPosSum += other.position;  // 累加位置
         }
         
+        // 6.6：判断是否有碰撞风险（在collisionDist范围内）
         if (distSq < collisionDistSq)
         {
-            collisionCount++;
-            collisionPosSum += other.position;
+            collisionCount++;               // 增加碰撞风险计数
+            collisionPosSum += other.position;  // 累加碰撞风险位置
         }
     }
     
-    // 计算新速度
+    // 步骤7：计算新速度 - 应用Boids算法的三个基本原则
+    
+    // 7.1：初始化新速度为当前速度（作为计算起点）
     float3 newVel = current.velocity;
     
-    // 1. 速度匹配
-    if (neighborCount > 0)
+    // 原则1：速度匹配优化（Alignment）
+    if (neighborCount > 0)  // 确保有邻居才计算
     {
-        float3 avgNeighborVel = neighborVelSum / neighborCount;
+        // 优化：使用倒数乘法代替除法（GPU上除法较慢）
+        float invNeighborCount = 1.0f / neighborCount;
+        
+        // 计算邻居的平均速度
+        float3 avgNeighborVel = neighborVelSum * invNeighborCount;
+        
+        // 速度匹配力 = 速度差 × 匹配强度
+        // (avgNeighborVel - current.velocity) 是速度差异向量
         newVel += (avgNeighborVel - current.velocity) * velocityMatchingAmt;
     }
     
-    // 2. 凝聚向心性
+    // 原则2：凝聚向心性优化（Cohesion）
     if (neighborCount > 0)
     {
-        float3 neighborCenter = neighborPosSum / neighborCount;
-        newVel += (neighborCenter - current.position) * flockCenteringAmt;
+        // 使用倒数乘法优化
+        float invNeighborCount = 1.0f / neighborCount;
+        
+        // 计算邻居的中心位置
+        float3 neighborCenter = neighborPosSum * invNeighborCount;
+        
+        // 计算指向中心的向量和距离
+        float3 toCenter = neighborCenter - current.position;
+        float centerDist = length(toCenter);  // 需要实际距离计算权重
+        
+        // 优化：添加距离权重 - 防止过度聚集
+        // 距离越近，向心力越小；距离越远，向心力越大
+        float distanceWeight = saturate(centerDist / (nearDist * 0.5f));
+        
+        // 凝聚向心力 = 指向中心的方向 × 向心强度 × 距离权重
+        newVel += toCenter * flockCenteringAmt * distanceWeight;
     }
     
-    // 3. 碰撞避免
+    // 原则3：碰撞避免优化（Separation）
     if (collisionCount > 0)
     {
-        float3 collisionCenter = collisionPosSum / collisionCount;
+        // 使用倒数乘法优化
+        float invCollisionCount = 1.0f / collisionCount;
+        
+        // 计算碰撞风险Boid的中心位置
+        float3 collisionCenter = collisionPosSum * invCollisionCount;
+        
+        // 分离力 = 指向碰撞中心的方向 × 避免强度
+        // 注意：collisionAvoidanceAmt通常为负值，表示远离
         newVel += (collisionCenter - current.position) * collisionAvoidanceAmt;
     }
     
-    // 4. 鼠标跟随
+    // 步骤8：外部影响 - 鼠标/目标跟随优化
+    
+    // 8.1：计算指向目标的向量
     float3 toMouse = mousePos - current.position;
-    float mouseDist = length(toMouse);
-    if (mouseDist > mouseAvoiddanceDsit)
+    
+    // 8.2：优化：使用距离平方比较，避免开方运算
+    float mouseDistSq = dot(toMouse, toMouse);  // 距离平方
+    float mouseAvoiddanceDsitSq = mouseAvoiddanceDsit * mouseAvoiddanceDsit;
+    
+    // 8.3：根据距离决定行为（使用距离平方比较）
+    if (mouseDistSq > mouseAvoiddanceDsitSq)
+    {
+        // 距离远：吸引模式 - 直接使用原始向量，避免归一化
         newVel += toMouse * mouseAtrractionAmt;
-    else
-        newVel -= normalize(toMouse) * mouseAvoidanceAmt;
+    }
+    else if (mouseDistSq > 0.001f)  // 避免除零错误
+    {
+        // 距离近：排斥模式 - 需要单位方向向量
+        // 优化：手动计算单位向量，只开方一次
+        float mouseDist = sqrt(mouseDistSq);  // 计算实际距离（一次开方）
+        newVel -= (toMouse / mouseDist) * mouseAvoidanceAmt;
+    }
     
-    // 5. 速度限制
-    float speed = length(newVel);
-    if (speed > maxVelocity)
+    // 步骤9：物理约束 - 速度限制优化
+    
+    // 9.1：计算速度平方，避免不必要的开方
+    float speedSq = dot(newVel, newVel);
+    
+    // 9.2：上限检查 - 如果超过最大速度
+    if (speedSq > maxVelocity * maxVelocity)
+    {
+        // 计算实际速度（一次开方）
+        float speed = sqrt(speedSq);
+        // 保持方向，调整速度为最大速度
         newVel = (newVel / speed) * maxVelocity;
-    if (speed < minVelocity)
+    }
+    // 9.3：下限检查 - 如果低于最小速度
+    else if (speedSq < minVelocity * minVelocity && speedSq > 0.001f)
+    {
+        // 计算实际速度（一次开方）
+        float speed = sqrt(speedSq);
+        // 保持方向，调整速度为最小速度
         newVel = (newVel / speed) * minVelocity;
+    }
+    // 9.4：特殊情况 - 速度几乎为零
+    else if (speedSq < 0.001f)
+    {
+        // 速度几乎为零，给予随机小速度避免停滞
+        // 使用线程ID和当前时间生成伪随机种子
+        uint seed = index + (uint)(_Time.y * 1000.0);
+        
+        // 生成随机方向向量
+        float2 randDir = float2(
+            frac(sin(float(seed) * 12.9898) * 43758.5453) - 0.5f,
+            frac(sin(float(seed + 1000) * 78.233) * 43758.5453) - 0.5f
+        );
+        
+        // 设置为最小速度的随机方向
+        newVel = float3(randDir.x, 0, randDir.y) * minVelocity;
+    }
     
-    // 6. 线性插值
+    // 步骤10：添加随机扰动 - 防止形成死气沉沉的小集团
+    
+    // 10.1：生成随机输入（基于位置和时间）
+    float2 randInput = float2(current.position.x + randomSeed, current.position.z + _Time.y);
+    
+    // 10.2：生成随机力向量
+    float3 randomForce = float3(
+        Rand(randInput) - 0.5f,  // X方向随机力（-0.5到0.5）
+        0,                       // Y方向保持为0（2D平面模拟）
+        Rand(randInput + float2(100.0, 100.0)) - 0.5f  // Z方向随机力
+    ) * 0.1f;  // 乘以扰动强度系数
+    
+    // 10.3：应用随机扰动
+    newVel += randomForce;
+    
+    // 步骤11：平滑过渡 - 线性插值
+    
+    // 使用lerp函数混合新旧速度，实现平滑变化
+    // lerp(a, b, t) = a * (1 - t) + b * t
+    // velocityLerpAmt控制混合权重：0=保持原速度，1=完全使用新速度
     newVel = lerp(current.velocity, newVel, velocityLerpAmt);
     
-    // 7. 更新位置
-    float3 newPos = current.position + newVel * 0.016f; // 近似Time.deltaTime
+    // 步骤12：更新位置
     
-    // 写回Buffer
+    // 12.1：计算新位置（使用固定时间步长）
+    // 位置 = 原位置 + 速度 × 时间
+    // 0.016f近似1/60秒，即60FPS下的每帧时间
+    float3 newPos = current.position + newVel * 0.016f;
+    
+    // 步骤13：写回结果到缓冲区
+    
+    // 13.1：创建更新后的Boid数据
     BoidData updated;
-    updated.position = newPos;
-    updated.velocity = newVel;
+    updated.position = newPos;  // 新位置
+    updated.velocity = newVel;  // 新速度
+    
+    // 13.2：将数据写回全局缓冲区
+    // 注意：这是原地修改，所有Boid并行执行
     boidsBuffer[index] = updated;
 }
