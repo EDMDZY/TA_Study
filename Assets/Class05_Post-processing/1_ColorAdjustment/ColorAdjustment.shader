@@ -6,6 +6,10 @@ Shader "Hidden/ColorAdjustment" // Hidden可以在列表中隐藏
         _Brightness ("亮度", float) = 1
         _Saturation ("饱和度", float) = 1
         _Contrast ("对比度", float) = 1
+        _VignetteIntensity("VignetteIntensity",Range(0.05,3.0)) = 1.5
+		_VignetteRoundness("VignetteRoundness",Range(1,6)) = 5 
+		_VignetteSmoothness("VignetteSmoothness",Range(0.05,5)) = 5
+    	_HueShift("HueShift",Range(0,1)) = 0
     }
     SubShader
     {
@@ -24,21 +28,55 @@ Shader "Hidden/ColorAdjustment" // Hidden可以在列表中隐藏
             float _Brightness;
             float _Saturation;
             float _Contrast;
+            float _VignetteIntensity;
+			float _VignetteRoundness;
+			float _VignetteSmoothness;
+			float _HueShift;
+
+            // ASE节点原码
+            float3 HSVToRGB(float3 c)
+			{
+				float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+				float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+				return c.z * lerp(K.xxx, saturate(p - K.xxx), c.y);
+			}
+			// ASE节点原码
+			float3 RGBToHSV(float3 c)
+			{
+				float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+				float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+				float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+				float d = q.x - min(q.w, q.y);
+				float e = 1.0e-10;
+				return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+			}
+            
 
             float4 frag (v2f_img i) : SV_Target
             {
                 half4 col = tex2D(_MainTex, i.uv);
-                // 亮度
-                half3 finalCol = col * _Brightness;
-                //饱和度
-                float lumin = dot(finalCol, float3(0.22, 0.707, 0.071)); //伽马空间求明度的方法
-                //float lumin = dot(finalCol, float3(0.0396, 0.458, 0.0061)); //线性空间求明度的方法
-                finalCol = lerp(lumin, finalCol, _Saturation);
-                //对比度
-                float3 midPoint = float3(0.5, 0.5, 0.5);
-                finalCol = lerp(midPoint, finalCol, _Contrast);
+                half3 finalcolor = col.rgb;
+            	
+            	//色相
+				float3 hsv = RGBToHSV(finalcolor);
+				hsv.r = hsv.r + _HueShift;
+				finalcolor = HSVToRGB(hsv);
+				//亮度
+				finalcolor = finalcolor * _Brightness;
+				//饱和度
+				float lumin = dot(finalcolor, float3(0.22, 0.707, 0.071));
+				finalcolor = lerp(lumin, finalcolor, _Saturation);
+				//对比度
+				float3 midpoint = float3(0.5, 0.5, 0.5);
+				finalcolor = lerp(midpoint, finalcolor, _Contrast);
+				//暗角/晕影
+				float2 d = abs(i.uv - half2(0.5,0.5)) * _VignetteIntensity;
+				d = pow(saturate(d), _VignetteRoundness);
+				float dist = length(d);
+				float vfactor = pow(saturate(1.0 - dist * dist), _VignetteSmoothness);
 
-                return float4(finalCol, col.a);
+				finalcolor = finalcolor * vfactor;
+				return float4(finalcolor,col.a);
             }
             ENDCG
         }
