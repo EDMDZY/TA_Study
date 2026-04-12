@@ -5,6 +5,7 @@ Shader "EasyImageEffect"
 	Properties
 	{
 		_MainTex ( "Screen", 2D ) = "black" {}  // 和脚本中Graphics.Blit(source, destination, material, 0);的source相关联
+		_Bright ("_Bright", Float) = 1
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
 	}
@@ -54,6 +55,7 @@ Shader "EasyImageEffect"
 			uniform sampler2D _MainTex;
 			uniform half4 _MainTex_TexelSize;
 			uniform half4 _MainTex_ST;
+			float _Bright;
 			
 			
 
@@ -91,7 +93,7 @@ Shader "EasyImageEffect"
 				float2 uv_MainTex = i.uv.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				
 
-				finalColor = tex2D( _MainTex, uv_MainTex );
+				finalColor = tex2D( _MainTex, uv_MainTex ) * _Bright;
 
 				return finalColor;
 			} 
