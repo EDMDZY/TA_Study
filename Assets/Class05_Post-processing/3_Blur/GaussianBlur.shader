@@ -6,6 +6,7 @@
 	sampler2D _MainTex;
 	float4 _BlurOffset;
 
+	// 水平采样
 	half4 frag_HorizontalBlur(v2f_img i) : SV_Target
 	{
 		half2 uv1 = i.uv + _BlurOffset.xy * half2(1, 0) * -2.0;
@@ -22,7 +23,8 @@
 		s += tex2D(_MainTex, uv5) * 0.05;
 		return s;
 	}
-
+	
+	// 垂直采样
 	half4 frag_VerticalBlur(v2f_img i) : SV_Target
 	{
 		half2 uv1 = i.uv + _BlurOffset.xy * half2(0, 1) * -2.0;

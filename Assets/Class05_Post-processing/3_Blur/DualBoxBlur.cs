@@ -62,7 +62,7 @@ public class DualBoxBlur : MonoBehaviour {
             Graphics.Blit(RT2, RT1, material, 0);
         }
 
-        Graphics.Blit(RT1, destination);
+        Graphics.Blit(RT2, destination);
 
         //release
         RenderTexture.ReleaseTemporary(RT1);

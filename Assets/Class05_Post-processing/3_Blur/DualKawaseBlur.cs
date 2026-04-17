@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections.Generic;
 
 [RequireComponent(typeof(Camera))]
 [ExecuteInEditMode]
@@ -15,8 +14,6 @@ public class DualKawaseBlur : MonoBehaviour
     public int _Iteration = 4;
     [Range(1, 10)]
     public float _DownSample = 2.0f;
-
-    List<RenderTexture> _tempRTList = new List<RenderTexture>();
 
     void Start()
     {

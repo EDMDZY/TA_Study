@@ -6,21 +6,24 @@
 	sampler2D _MainTex;
 	float4 _BlurOffset;
 
+	// 四角采样
 	half4 frag_BoxFilter_4Tap(v2f_img i) : SV_Target
 	{
 		half4 d = _BlurOffset.xyxy * half4(-1,-1,1,1);
 		half4 s = 0;
+		// 采样四角像素
 		s += tex2D(_MainTex, i.uv + d.xy);
 		s += tex2D(_MainTex, i.uv + d.zy);
 		s += tex2D(_MainTex, i.uv + d.xw);
 		s += tex2D(_MainTex, i.uv + d.zw);
+		// 得到均值
 		s *= 0.25;
 		return s;
 	}
 
+	// 边缘采样
 	half4 frag_BoxFilter_9Tap(v2f_img i) : SV_Target
 	{
-		//half4 d = _BlurOffset.xyxy * half4(-1,1,0,0);
 		half4 d = _BlurOffset.xyxy * half4(-1, -1, 1, 1);
 
 		half4 s = 0;
