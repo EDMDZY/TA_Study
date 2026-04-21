@@ -5,11 +5,15 @@ using UnityEngine;
 public class FunnyGPUInstance : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _instanceGo;//初实例化对你
+    private GameObject _instanceGo;//初实例化对像
     [SerializeField]
     private int _instanceCount;//实例化个数
     [SerializeField]
     private bool _bRandPos = false;
+
+    [SerializeField] 
+    private ComputeShader computeShader;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +24,7 @@ public class FunnyGPUInstance : MonoBehaviour
         for (int i = 0; i < _instanceCount; i++)
         {
             Vector3 pos = new Vector3(i * 1.5f, 0, 0);
-            GameObject pGO = GameObject.Instantiate<GameObject>(_instanceGo);
+            GameObject pGO = Instantiate(_instanceGo);
             pGO.transform.SetParent(gameObject.transform);
             if (_bRandPos)
             {

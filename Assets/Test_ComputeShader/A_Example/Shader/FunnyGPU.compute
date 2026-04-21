@@ -1,0 +1,16 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// 声明形参
+StructuredBuffer<int> _InputData;       // 输入缓冲区
+RWStructuredBuffer<int> _OutputData;    // 输出缓冲区
+
+// 划分线程组
+[numthreads(64,1,1)]
+
+// 6.执行计算
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // 每个线程计算一个数字的平方
+    _OutputData[id.x] = _InputData[id.x] * _InputData[id.x];
+}

@@ -32,9 +32,9 @@ Material:
     - _AdiskBrightness: 0.5
     - _AdiskEnabled: 1
     - _AdiskHeight: 0.2
-    - _AdiskNoiseScale: 1
+    - _AdiskNoiseScale: 0.73
     - _AdiskSpeed: 0.63
-    - _CameraSpeed: 0.33
+    - _CameraSpeed: 0.53
     - _FovScale: 2
     - _GravitationalLensing: 1
     - _MouseControl: 1
