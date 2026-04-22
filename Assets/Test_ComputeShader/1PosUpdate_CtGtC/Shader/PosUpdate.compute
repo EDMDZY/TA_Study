@@ -3,15 +3,23 @@
 
 // 声明形参
 RWStructuredBuffer<float3> _ParticlePositions;
-RWStructuredBuffer<float3> _OutputData;    // 输出缓冲区
+
 float _DeltaTime;
 float _Speed;
+float _Time;
 
 // 划分线程组
-[numthreads(256,1,1)]
+[numthreads(64,1,1)]
 
 // 6.执行计算
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    _OutputData[id.x] = _ParticlePositions[id.x].y + sin(_DeltaTime * _Speed + _ParticlePositions[id.x].x) * _DeltaTime;
+    // 读取当前位置
+    float3 pos = _ParticlePositions[id.x];
+    
+    // 修改Y轴做正弦运动
+    pos.y += sin(_Time * _Speed + pos.x) * _DeltaTime;
+    
+    // 写回
+    _ParticlePositions[id.x] = pos;
 }

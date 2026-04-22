@@ -11,9 +11,6 @@ public class FunnyGPUInstance : MonoBehaviour
     [SerializeField]
     private bool _bRandPos = false;
 
-    [SerializeField] 
-    private ComputeShader computeShader;
-    
     // Start is called before the first frame update
     void Start()
     {

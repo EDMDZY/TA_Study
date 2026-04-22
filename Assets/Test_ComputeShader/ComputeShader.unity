@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 380533873}
   - component: {fileID: 380533874}
   m_Layer: 0
-  m_Name: PosUpdate
+  m_Name: PosUpdate_CtGtC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,7 +169,7 @@ MonoBehaviour:
   computeShader: {fileID: 7200000, guid: 915a70d2b853aa6478334c52039a932a, type: 3}
   cube: {fileID: 5458435424069596608, guid: f10cfcf2ffef3ba4d938a7a64373e494, type: 3}
   speed: 1
-  count: 20
+  count: 10000
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

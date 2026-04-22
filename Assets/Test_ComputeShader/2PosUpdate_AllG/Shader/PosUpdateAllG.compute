@@ -1,0 +1,28 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// 声明形参
+RWStructuredBuffer<float3> _ParticlePositions;
+
+float _Speed;
+int _Count;
+
+// 划分线程组
+[numthreads(256,1,1)]
+
+// 6.执行计算
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _Count) return;
+    
+    float3 pos = _ParticlePositions[id.x];
+    
+    // 更复杂的运动：绕Y轴旋转 + Y轴正弦波
+    float angle = _Speed;
+    float radius = length(pos.xz);
+    float newX = pos.x * cos(angle) - pos.z * sin(angle);
+    float newZ = pos.x * sin(angle) + pos.z * cos(angle);
+    float newY = sin(_Speed * 1.5 + pos.x * 0.5) * 2.0;
+    
+    _ParticlePositions[id.x] = float3(newX, newY, newZ);
+}
