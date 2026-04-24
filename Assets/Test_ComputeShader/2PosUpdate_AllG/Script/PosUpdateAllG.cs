@@ -95,9 +95,12 @@ public class PosUpdateAllG : MonoBehaviour
 
     void Update()
     {
-        // 执行ComputeShader更新位置
+        // 传入ComputeShader需要的参数
         computeShader.SetFloat("_Speed", speed);
+        // 告诉GPU：运行ComputeShader，更新位置缓冲区
         computeShader.Dispatch(kernel, threadGroups, 1, 1);
+        // 注意：这里没有GetData()，不等待GPU完成
+        // 只是提交了任务，GPU会在合适的时候执行
 
         // 直接GPU渲染，不回读CPU！
         Graphics.DrawMeshInstancedIndirect(cubeMesh, 0, instancedMaterial, bounds, argsBuffer);

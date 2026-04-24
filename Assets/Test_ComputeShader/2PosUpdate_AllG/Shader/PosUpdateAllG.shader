@@ -14,10 +14,12 @@ Shader "Unlit/PosUpdateAllG"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_instancing
+            // Unity自动从MaterialPropertyBlock读取矩阵
+            // 你不需要写任何矩阵代码
+            #pragma multi_compile_instancing    // 正常GPU Instancing
             // Unity GPU Instancing的核心指令，让你可以手动控制每个实例的变换数据来源
             // procedural表示使用程序化方式提供实例数据（而不是从MaterialPropertyBlock）
-            #pragma instancing_options procedural:setup //在渲染每个实例前会自动调用这个函数
+            #pragma instancing_options procedural:setup //Procedural模式GPU Instancing
             
             #include "UnityCG.cginc"
             
@@ -41,7 +43,8 @@ Shader "Unlit/PosUpdateAllG"
             void setup()
             {
                 // UNITY_ACCESS_INSTANCED_PROP 用于访问MaterialPropertyBlock数据
-                // 但使用procedural时，通常不需要这个
+                // 但使用procedural时，通常不需要这个,且必须手动设置unity_ObjectToWorld
+                // 因为Unity没有任何内置API能直接从 StructuredBuffer<float3> 设置物体位置
                 // 从缓冲区读取实例位置
                 #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
                 float3 pos = _ParticlePositions[unity_InstanceID];

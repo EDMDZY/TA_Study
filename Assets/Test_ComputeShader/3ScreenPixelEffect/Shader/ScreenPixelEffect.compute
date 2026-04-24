@@ -1,0 +1,53 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// 声明形参
+Texture2D<float4> _Source;
+RWTexture2D<float4> _Result;
+float _Width;
+float _Height;
+float _Threshold;
+
+/// 亮度转换系数
+static float3 LUMINANCE_FACTOR = float3(0.299f, 0.587f, 0.114f);
+
+// 获取像素的亮度值
+float GetLuminance(int x, int y)
+{
+    // 边界检查：超出边界的像素返回边缘像素的值（clamp）
+    x = clamp(x, 0, _Width - 1);
+    y = clamp(y, 0, _Height - 1);
+    
+    float3 color = _Source[int2(x, y)].rgb;
+    return dot(color, LUMINANCE_FACTOR);
+}
+
+[numthreads(16, 16, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int x = id.x;
+    int y = id.y;
+    
+    if (x >= _Width || y >= _Height)
+        return;
+    
+    // 采样3x3区域
+    float tl = GetLuminance(x - 1, y - 1);
+    float tm = GetLuminance(x,     y - 1);
+    float tr = GetLuminance(x + 1, y - 1);
+    float ml = GetLuminance(x - 1, y);
+    float mr = GetLuminance(x + 1, y);
+    float bl = GetLuminance(x - 1, y + 1);
+    float bm = GetLuminance(x,     y + 1);
+    float br = GetLuminance(x + 1, y + 1);
+    
+    // Sobel算子
+    float gx = -tl + tr - 2.0f * ml + 2.0f * mr - bl + br;
+    float gy = -tl - 2.0f * tm - tr + bl + 2.0f * bm + br;
+    
+    float edgeStrength = sqrt(gx * gx + gy * gy);
+    //edgeStrength = saturate(edgeStrength / 2.0f);
+    
+    float edge = edgeStrength > _Threshold ? 1.0f : 0.0f;
+    _Result[int2(x, y)] = float4(edgeStrength / 5.66, 0, 0, 1);
+}
