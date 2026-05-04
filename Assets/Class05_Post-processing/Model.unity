@@ -231,6 +231,7 @@ GameObject:
   - component: {fileID: 963194230}
   - component: {fileID: 963194232}
   - component: {fileID: 963194231}
+  - component: {fileID: 963194233}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -319,7 +320,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 829c71086e6281d4188c9b5fdfcb6d7d, type: 3}
   m_Name: 
@@ -341,12 +342,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bfbf9e473868b24fa793f68c770a715, type: 3}
+  m_Script: {fileID: 11500000, guid: 62d9cec51401148498007f10219ded18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 84b3de807026c3e4ba836aa046276636, type: 2}
-  blurIteration: 4
-  blurRadius: 5
+  material: {fileID: 2100000, guid: ecc4c554559b3da4bb62c22ba2101cf5, type: 2}
+  _Iteration: 4
+  _BlurRadius: 5
+  _DownSample: 2
 --- !u!114 &963194231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,12 +358,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae2c6261ba181c74799d36cf241892f9, type: 3}
+  m_Script: {fileID: 11500000, guid: f7b79690fbfd7c347a33148975bb3c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 84b3de807026c3e4ba836aa046276636, type: 2}
-  blurIteration: 1
-  blurRadius: 3.07
+  material: {fileID: 2100000, guid: e197a0fa628b2a54b9427ef63376ea24, type: 2}
+  _Iteration: 4
+  _BlurRadius: 5
+  _DownSample: 2
 --- !u!114 &963194232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -371,12 +374,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dfb3d32e7c26dd4b8d3d9836b2b9460, type: 3}
+  m_Script: {fileID: 11500000, guid: a94c379a49b35f043b1f7cb4b7d32eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 6647fe9608a109449b0aad57804c40b7, type: 2}
-  blurIteration: 4
-  blurRadius: 5
+  material: {fileID: 2100000, guid: ecc4c554559b3da4bb62c22ba2101cf5, type: 2}
+  _Iteration: 4
+  _BlurRadius: 5
+  _DownSample: 2
+--- !u!114 &963194233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3d997429b8f59a47a7080b4ed75b21d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 269e8c986fc460f40aa5808d37c4a961, type: 2}
+  _BlurRadius: 5
+  _Iteration: 4
+  _DownSample: 2
 --- !u!1 &1270444463
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,7 +602,7 @@ Transform:
   m_GameObject: {fileID: 1410696553}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.526, y: 0.41, z: 1.637}
+  m_LocalPosition: {x: 0.526, y: 0.41, z: 1.73}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

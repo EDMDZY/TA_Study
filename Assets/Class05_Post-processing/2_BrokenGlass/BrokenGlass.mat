@@ -26,9 +26,9 @@ Material:
     - _GlassMask:
         m_Texture: {fileID: 2800000, guid: 8496f72adf10a3e488f13cad6e5a617f, type: 3}
         m_Scale: {x: 0.7, y: 0.7}
-        m_Offset: {x: -0.11, y: 0.13}
+        m_Offset: {x: -0.11, y: 0.11}
     - _GlassNormal:
-        m_Texture: {fileID: 2800000, guid: 1a2289d7e481cf847a923250cdf7eee5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3cae009b65ce08b459daaf603fc3d02f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -39,7 +39,7 @@ Material:
     m_Floats:
     - _Brightness: 1
     - _Contrast: 1
-    - _Distort: 0.5
+    - _Distort: 0.58
     - _GlassCrack: 1.3
     - _HueShift: 0
     - _Saturation: 1

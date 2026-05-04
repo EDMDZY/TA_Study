@@ -44,6 +44,7 @@ Shader "Unlit/ScreenImage"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _MainTex_HDR;
             float _Brightness;
             float _Saturation;
             float _Contrast;
@@ -90,6 +91,7 @@ Shader "Unlit/ScreenImage"
                 //screenUV = screenUV * 0.5 + 0.5; // 把范围限制到0-1  若使用ComputeScreenPos处理过则不需要这一步
                 
                 float4 col = tex2D(_MainTex, screenUV);
+            	col.rgb = DecodeHDR(col, _MainTex_HDR);
                 half3 finalcolor = col.rgb;
             	
             	//色相
