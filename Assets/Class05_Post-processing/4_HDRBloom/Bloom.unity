@@ -462,7 +462,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: c0235411c3b0f094594c1379e37c0373, type: 2}
   _Iteration: 3
-  _BloomRadius: 0.64
+  _BloomRadius: 0.63
   _Intensity: 14.5
   _Threshold: 0.37
 --- !u!81 &843516438
